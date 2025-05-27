@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detector de Fake News</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Panel izquierdo: Información Útil -->
+    <aside class="sidebar-left">
+      <h2>Información Útil</h2>
+      <ul id="infoList"></ul>
+    </aside>
+
+    <!-- Panel principal: Resultados y noticias -->
+    <main class="main-panel">
+      <h1>Detector de Noticias Falsas</h1>
+      <form id="newsForm">
+        <input type="url" id="urlInput" placeholder="https://ejemplo.com/noticia" required />
+        <button type="submit">Analizar</button>
+        <div id="loading" style="display:none; margin-top:10px; text-align:center;">
+          <img id="loadingGif" src="img/loading.gif" alt="Cargando..." style="display:none; width: 50px; height: 50px; margin-top: 10px;" />
+        </div>
+      </form>
+
+      <section class="result-block">
+        <h2>Resultado del Análisis</h2>
+        <div id="result" class="result"></div>
+      </section>
+
+      <section id="related" class="related">
+        <h2>Noticias Relacionadas</h2>
+        <ul id="relatedList"></ul>
+      </section>
+    </main>
+
+    <!-- Panel derecho: Estadísticas + Gráficas -->
+    <aside class="sidebar-right">
+      <h2>Estadísticas por Fuente</h2>
+      <table id="statsTable">
+        <thead>
+          <tr>
+            <th>Fuente</th>
+            <th>Total</th>
+            <th>Fake</th>
+            <th>Real</th>
+            <th>% Veracidad</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="charts">
+        <h3>Noticias Fake vs Reales por Fuente</h3>
+        <canvas id="fakeRealChart"></canvas>
+
+        <h3>Noticias por Fuente (Total)</h3>
+        <canvas id="noticiasPorFuenteChart"></canvas>
+
+        <h3>Tendencia Diaria de Noticias</h3>
+        <canvas id="tendenciaDiariaChart"></canvas>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
