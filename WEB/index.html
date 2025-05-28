@@ -6,62 +6,93 @@
   <title>Detector de Fake News</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
   <div class="container">
     <!-- Panel izquierdo: Información Útil -->
-    <aside class="sidebar-left">
+    <aside class="sidebar-left" aria-label="Información útil">
       <h2>Información Útil</h2>
-      <ul id="infoList"></ul>
+      <ul id="infoList">
+        <!-- Aquí se mostrarán definiciones útiles -->
+      </ul>
     </aside>
 
     <!-- Panel principal: Resultados y noticias -->
     <main class="main-panel">
       <h1>Detector de Noticias Falsas</h1>
-      <form id="newsForm">
+      <form id="validationForm" enctype="multipart/form-data" aria-label="Formulario de validación">
+        <label for="validationType" class="sr-only">Tipo de validación</label>
+        <select id="validationType" aria-label="Tipo de validación" title="Selecciona método">
+          <option value="news" selected>News</option>
+          <option value="site">Site</option>
+          <option value="xml">XML</option>
+        </select>
+
+        <label for="urlInput" class="sr-only">URL para analizar</label>
         <input type="url" id="urlInput" placeholder="https://ejemplo.com/noticia" required />
-        <button type="submit">Analizar</button>
+
+        <label for="rssFileInput" class="sr-only">Archivo RSS/XML</label>
+        <input type="file" id="rssFileInput" accept=".xml,.rss,.atom,.txt" />
+
+        <div id="xmlUrlContainer" style="display:none; margin-top: 10px;">
+          <small>O cargar desde página web:</small><br />
+          <label for="xmlUrlInput" class="sr-only">URL de archivo XML</label>
+          <input type="url" id="xmlUrlInput" placeholder="https://heraldodemexico.com.mx/rss/feed.html?r=5" />
+        </div>
+
+        <button type="submit">Validar</button>
+
         <div id="loading" style="display:none; margin-top:10px; text-align:center;">
           <img id="loadingGif" src="img/loading.gif" alt="Cargando..." style="display:none; width: 50px; height: 50px; margin-top: 10px;" />
         </div>
       </form>
 
-      <section class="result-block">
+      <section class="result-block" aria-live="polite" aria-atomic="true">
         <h2>Resultado del Análisis</h2>
-        <div id="result" class="result"></div>
+        <div id="result" class="result" role="region" aria-label="Resultado del análisis"></div>
       </section>
 
-      <section id="related" class="related">
+      <section id="related" class="related" aria-label="Noticias relacionadas">
         <h2>Noticias Relacionadas</h2>
-        <ul id="relatedList"></ul>
+        <ul id="relatedList">
+          <!-- Aquí se listarán noticias relacionadas -->
+        </ul>
       </section>
+
+      <div id="noticiasListContainer" style="display:none; margin-top: 20px;" aria-live="polite" aria-atomic="true">
+        <!-- Lista dinámica de noticias para seleccionar -->
+      </div>
     </main>
 
     <!-- Panel derecho: Estadísticas + Gráficas -->
-    <aside class="sidebar-right">
+    <aside class="sidebar-right" aria-label="Estadísticas y gráficos">
       <h2>Estadísticas por Fuente</h2>
-      <table id="statsTable">
+      <table id="statsTable" role="table" aria-describedby="statsDescription">
+        <caption id="statsDescription" class="sr-only">Tabla con estadísticas de noticias falsas y reales por fuente</caption>
         <thead>
           <tr>
-            <th>Fuente</th>
-            <th>Total</th>
-            <th>Fake</th>
-            <th>Real</th>
-            <th>% Veracidad</th>
+            <th scope="col">Fuente</th>
+            <th scope="col">Total</th>
+            <th scope="col">Fake</th>
+            <th scope="col">Real</th>
+            <th scope="col">% Veracidad</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <!-- Contenido dinámico -->
+        </tbody>
       </table>
 
       <div class="charts">
         <h3>Noticias Fake vs Reales por Fuente</h3>
-        <canvas id="fakeRealChart"></canvas>
+        <canvas id="fakeRealChart" role="img" aria-label="Gráfica de barras de noticias falsas y reales por fuente"></canvas>
 
         <h3>Noticias por Fuente (Total)</h3>
-        <canvas id="noticiasPorFuenteChart"></canvas>
+        <canvas id="noticiasPorFuenteChart" role="img" aria-label="Gráfica de dona de noticias por fuente"></canvas>
 
         <h3>Tendencia Diaria de Noticias</h3>
-        <canvas id="tendenciaDiariaChart"></canvas>
+        <canvas id="tendenciaDiariaChart" role="img" aria-label="Gráfica de línea de tendencia diaria de noticias"></canvas>
       </div>
     </aside>
   </div>

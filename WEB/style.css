@@ -8,6 +8,18 @@ body {
   overflow: hidden;
 }
 
+/* Clase para ocultar elementos visualmente pero accesibles para lectores de pantalla */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  border: 0 !important;
+}
+
 /* Contenedor principal con grid */
 .container {
   display: grid;
@@ -46,27 +58,68 @@ body {
   font-weight: 700;
 }
 
-form#newsForm {
+/* Formulario con select y inputs */
+form#validationForm {
   display: flex;
   gap: 10px;
+  align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap; /* Permite que elementos puedan ir a otra línea */
 }
 
-form#newsForm input[type="url"] {
-  flex: 1;
+form#validationForm select#validationType {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+form#validationForm input[type="url"],
+form#validationForm input[type="file"] {
+  flex: 1 1 300px; /* Crece y puede encogerse con base mínima de 300px */
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-form#newsForm input[type="url"]:focus {
+form#validationForm input[type="url"]:focus,
+form#validationForm input[type="file"]:focus {
   border-color: #2a9d8f;
   outline: none;
 }
 
-form#newsForm button {
+/* Contenedor para URL XML, aparece debajo del input archivo */
+#xmlUrlContainer {
+  width: 100%;
+  margin-top: 10px;
+  display: block;
+}
+
+#xmlUrlContainer small {
+  color: #555;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+  display: block;
+}
+
+#xmlUrlContainer input[type="url"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botón submit */
+form#validationForm button {
   padding: 10px 18px;
   background: #2a9d8f;
   border: none;
@@ -75,9 +128,10 @@ form#newsForm button {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex-shrink: 0;
 }
 
-form#newsForm button:hover {
+form#validationForm button:hover {
   background: #21867a;
 }
 

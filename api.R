@@ -40,6 +40,68 @@ function(req, res) {
   plumber::forward()
 }
 
+# Función para recuperar primeras 5 noticias de un portal genérico con heurística
+validarPortal <- function(url, max_noticias = 5) {
+  html <- tryCatch(read_html(url), error = function(e) return(NULL))
+  if (is.null(html)) {
+    return(list(error = "No se pudo acceder a la página."))
+  }
+  
+  selectores <- c(
+    "article a",
+    "h2 a",
+    "h3 a",
+    ".post-title a",
+    ".article-title a",
+    ".news-title a",
+    ".entry-title a",
+    ".headline a",
+    ".title a",
+    ".story a",
+    "li a",
+    "a"
+  )
+  
+  resultados <- list()
+  
+  for (sel in selectores) {
+    nodes <- html %>% html_elements(sel)
+    if (length(nodes) > 0) {
+      titulos <- nodes %>% html_text(trim = TRUE)
+      urls_noticias <- nodes %>% html_attr("href")
+      
+      # Normalizar URLs relativas a absolutas
+      urls_noticias <- sapply(urls_noticias, function(u) {
+        if (is.na(u)) return(NA)
+        if (startsWith(u, "http")) return(u)
+        base <- paste0(urltools::url_parse(url)$scheme, "://", urltools::url_parse(url)$domain)
+        if (!startsWith(u, "/")) u <- paste0("/", u)
+        paste0(base, u)
+      })
+      
+      df_temp <- tibble(titulo = titulos, url = urls_noticias) %>%
+        filter(!is.na(url), !is.na(titulo), titulo != "", url != "") %>%
+        distinct()
+      
+      resultados <- bind_rows(resultados, df_temp)
+    }
+    if (nrow(resultados) >= max_noticias) break
+  }
+  
+  resultados %>% distinct() %>% slice_head(n = max_noticias)
+}
+
+#* Endpoint para validar portal y obtener primeras noticias
+#* @param url URL del portal de noticias
+#* @get /validar_portal
+function(url = "") {
+  if (url == "") {
+    return(list(error = "URL vacía."))
+  }
+  res <- validarPortal(url)
+  return(res)
+}
+
 #* Analiza una URL y devuelve predicción
 #* @param url
 #* @get /analizar
@@ -199,4 +261,3 @@ function() {
   
   return(datos)
 }
-
